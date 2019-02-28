@@ -1,10 +1,13 @@
 package com.example.softomateidentifyerl;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,8 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        /*implements NavigationView.OnNavigationItemSelectedListener*/ {
 
+    int menuItemSelected=0;
+    public static final String SAVE_STATE_MENU="state_menu";
 		
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +38,19 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        //navigationView.setCheckedItem(R.id.nav_identifyer);
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                selectDrawerItem(item);
+                return true;
+            }
+        });
+        if(savedInstanceState != null){
+            menuItemSelected = savedInstanceState.getInt(SAVE_STATE_MENU,0);
+        }
+        else
+            selectDrawerItem(navigationView.getMenu().getItem(menuItemSelected));
+        Log.d("Activity", "onCreate");
     }
 
     @Override
@@ -70,9 +85,15 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt(SAVE_STATE_MENU, menuItemSelected);
+        Log.d("Activity", "onSaveInstanceState");
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    public void selectDrawerItem(MenuItem item) {
         // Handle navigation view item clicks here.
 		Fragment fragment = null;
 		Class fragmentClass = null;
@@ -82,9 +103,11 @@ public class MainActivity extends AppCompatActivity
 			case R.id.nav_identifyer:
 				//fragmentClass = IdentifyerFragment.class;
 				fragment = new IdentifyerFragment();
+                menuItemSelected=0;
 			break;
 			case R.id.nav_history:
 				fragment = new HistoryFragment();
+                menuItemSelected=1;
 			break;
 		}
 		
@@ -95,6 +118,7 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        Log.d("Activity", "onNavigationItemSelected");
+        //return true;
     }
 }

@@ -11,12 +11,12 @@ public class IdentifyerPresenter implements IdentifyerContractor.Presenter {
     @Override
     public void onFabWasClicked() {
         String text = view.getIdentText();
-        //сделать лоадер
-        String lang = db.identifyerLang(text);
-        TextClass txt = new TextClass(text);
-        txt.setLang(lang);
-        db.saveText(txt);
-        view.showDialog(text);
+		view.initIdentifyer(text);
+    }
+	
+	@Override
+    public void onLoadFinished(TextClass txt) {
+        view.isShowDialog(txt.getLang());
     }
 
     @Override

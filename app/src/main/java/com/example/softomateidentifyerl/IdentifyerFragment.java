@@ -2,9 +2,15 @@ package com.example.softomateidentifyerl;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +20,21 @@ import android.widget.TextView;
  * Created by VNPrk on 27.10.2018.
  */
 
-public class IdentifyerFragment extends Fragment implements IdentifyerContractor.View{
+public class IdentifyerFragment extends Fragment implements LoaderManager.LoaderCallbacks<TextClass>, IdentifyerContractor.View{
 
+    private static final int MSG_SHOW_DIALOG = 111;
+    private static final String SAVE_STATE_TEXT = "state_text";
     TextView tvText = null;
 	FloatingActionButton fabIdent;
     View view=null;
+    String lang="";
     IdentifyerPresenter presenter=null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Fragment", "onCreate");
+        setRetainInstance(true);
     }
 
     @Override
@@ -32,9 +43,19 @@ public class IdentifyerFragment extends Fragment implements IdentifyerContractor
         view = inflater.inflate(R.layout.fragment_identifyer, container, false);
         presenter = new IdentifyerPresenter(this);
         initViews();
-
-        //initData();
+        if(savedInstanceState != null){
+            String text = savedInstanceState.getString(SAVE_STATE_TEXT);
+            tvText.setText(text);
+        }
+        Log.d("Fragment", "onCreateView");
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVE_STATE_TEXT, tvText.getText().toString());
+        Log.d("Fragment", "onSaveInstanceState");
     }
 
     private void initViews(){
@@ -66,17 +87,15 @@ public class IdentifyerFragment extends Fragment implements IdentifyerContractor
 
 
     @Override
+    public void isShowDialog(String lang) {
+        this.lang=lang;
+        handler.sendEmptyMessage(MSG_SHOW_DIALOG);
+    }
+
     public void showDialog(String lang) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-        adb.setTitle(getString(R.string.dlg_tittle))
-                .setPositiveButton(R.string.dlg_ok,new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //succesRequest(requestUsers.get(position).getId());
-                        //Toast.makeText(getContext(),"id="+id+" position="+position, Toast.LENGTH_LONG).show();
-                    }
-                })
-                .setMessage(String.format("%s %s",getString(R.string.dlg_message), lang ) );
-        adb.create().show();
+        String messageDialog = String.format("%s %s",getString(R.string.dlg_message), lang );
+        TextDialogFragment dialog = TextDialogFragment.newInstance(messageDialog);
+        dialog.show(getFragmentManager(), TextDialogFragment.TAG);
     }
 
     @Override
@@ -88,4 +107,36 @@ public class IdentifyerFragment extends Fragment implements IdentifyerContractor
     public void clearTvIdentText() {
         tvText.setText("");
     }
+	
+	public void initIdentifyer(String text){
+		Bundle bundle = new Bundle();
+        bundle.putString(IdentifyerLoader.KEY_IDENT_TEXT, text);
+        getLoaderManager().initLoader(IdentifyerLoader.IDENT_LOADER_ID, bundle, this);
+	}
+	
+	@Override
+    public Loader<TextClass> onCreateLoader(int id, Bundle args) {
+		return new IdentifyerLoader(view.getContext(), args);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<TextClass> loader, TextClass data) {
+        int id = loader.getId();
+        presenter.onLoadFinished(data);
+        getActivity().getLoaderManager().destroyLoader(id);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<TextClass> loader) {
+
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == MSG_SHOW_DIALOG) {
+                showDialog(lang);
+            }
+        }
+    };
 }

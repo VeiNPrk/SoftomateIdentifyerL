@@ -1,5 +1,10 @@
 package com.example.softomateidentifyerl;
 
+import android.util.Log;
+
+import com.dbflow5.query.SQLite;
+import com.dbflow5.query.Select;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +14,7 @@ public class DBClass implements MVPRepository {
 
     @Override
     public void saveText(TextClass textItem) {
-
+	//	textItem.save();
     }
 
     @Override
@@ -28,12 +33,21 @@ public class DBClass implements MVPRepository {
         TextClass t4 = new TextClass("123fgbdb gvbe greg");
         t4.setLang("ENG");
         texts.add(t4);
+		/*List<TextClass> texts = null;
+        try{
+            texts = SQLite.select().from(TextClass.class).orderBy(TextClass_Table.dateTimeMils, true).queryList();
+        }
+        catch (Exception ex)
+        {
+            Log.e("CATCH getHistory", ex.getMessage());
+        }*/
         return texts;
     }
 
     @Override
     public String identifyerLang(String text) {
-        return null;
+		
+        return "Чтото";
     }
 
     private void testFill()

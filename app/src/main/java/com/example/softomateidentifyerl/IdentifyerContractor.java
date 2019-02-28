@@ -6,13 +6,15 @@ import android.view.View;
 
 public interface IdentifyerContractor {
     interface View {
-        void showDialog(String lang);
+        void isShowDialog(String lang);
 		String getIdentText();
 		void clearTvIdentText();
+		void initIdentifyer(String text);
     }
 
     interface Presenter {
         void onFabWasClicked();
+		void onLoadFinished(TextClass txt);
         void onDestroy();
     }
 }
