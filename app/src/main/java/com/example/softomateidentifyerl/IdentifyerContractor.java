@@ -16,5 +16,6 @@ public interface IdentifyerContractor {
         void onFabWasClicked();
 		void onLoadFinished(TextClass txt);
         void onDestroy();
+        void dialogShowDone();
     }
 }

@@ -16,24 +16,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 /**
  * Created by VNPrk on 27.10.2018.
  */
 
-public class IdentifyerFragment extends Fragment implements LoaderManager.LoaderCallbacks<TextClass>, IdentifyerContractor.View{
+public class IdentifyerFragment extends Fragment implements LoaderManager.LoaderCallbacks<TextClass>, IdentifyerContractor.View,
+    TextDialogFragment.TextDialogListener{
 
+    public final String TAG = getClass().getSimpleName();
     private static final int MSG_SHOW_DIALOG = 111;
     private static final String SAVE_STATE_TEXT = "state_text";
+    private static final String SAVE_STATE_LOADST = "state_loader";
     TextView tvText = null;
 	FloatingActionButton fabIdent;
     View view=null;
     String lang="";
+    boolean loaderIsStart = false;
     IdentifyerPresenter presenter=null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Fragment", "onCreate");
+        Log.d(TAG, "onCreate");
         setRetainInstance(true);
     }
 
@@ -45,9 +51,20 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
         initViews();
         if(savedInstanceState != null){
             String text = savedInstanceState.getString(SAVE_STATE_TEXT);
+            loaderIsStart = savedInstanceState.getBoolean(SAVE_STATE_LOADST);
             tvText.setText(text);
+            if(loaderIsStart)
+            {
+                Bundle bundle = new Bundle();
+                bundle.putString(IdentifyerLoader.KEY_IDENT_TEXT, text);
+                getLoaderManager().restartLoader(IdentifyerLoader.IDENT_LOADER_ID, bundle, this);
+            }
+
+            //initIdentifyer(text);
         }
-        Log.d("Fragment", "onCreateView");
+        getLoaderManager();
+        Log.d(TAG, "onCreateView");
+
         return view;
     }
 
@@ -55,20 +72,19 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SAVE_STATE_TEXT, tvText.getText().toString());
-        Log.d("Fragment", "onSaveInstanceState");
+        outState.putBoolean(SAVE_STATE_LOADST, loaderIsStart);
+        Log.d(TAG, "onSaveInstanceState");
     }
 
     private void initViews(){
-        tvText = (TextView) view.findViewById(R.id.tv_text);
-		fabIdent = (FloatingActionButton)view.findViewById(R.id.fab_add);
-        //progressBar=(ProgressBar)view.findViewById(R.id.progressBar);
+        tvText = view.findViewById(R.id.tv_text);
+		fabIdent = view.findViewById(R.id.fab_add);
         fabIdent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onFabWasClicked();
             }
         });
-        //progressBar=(ProgressBar)view.findViewById(R.id.progressBar2);
     }
 
 
@@ -95,6 +111,7 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
     public void showDialog(String lang) {
         String messageDialog = String.format("%s %s",getString(R.string.dlg_message), lang );
         TextDialogFragment dialog = TextDialogFragment.newInstance(messageDialog);
+        dialog.setTargetFragment(this,0);
         dialog.show(getFragmentManager(), TextDialogFragment.TAG);
     }
 
@@ -116,19 +133,24 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
 	
 	@Override
     public Loader<TextClass> onCreateLoader(int id, Bundle args) {
+        Log.d(TAG, "onCreateLoader");
+        loaderIsStart=true;
 		return new IdentifyerLoader(view.getContext(), args);
+
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<TextClass> loader, TextClass data) {
         int id = loader.getId();
         presenter.onLoadFinished(data);
-        getActivity().getLoaderManager().destroyLoader(id);
+        getLoaderManager().destroyLoader(id);
+        loaderIsStart=false;
+        Log.d(TAG, "onLoadFinished");
     }
 
     @Override
     public void onLoaderReset(Loader<TextClass> loader) {
-
+        Log.d(TAG, "onLoaderReset");
     }
 
     private Handler handler = new Handler() {
@@ -139,4 +161,9 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
             }
         }
     };
+
+    @Override
+    public void onYesClicked() {
+        presenter.dialogShowDone();
+    }
 }

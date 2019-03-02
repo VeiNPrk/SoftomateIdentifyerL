@@ -1,12 +1,21 @@
 package com.example.softomateidentifyerl;
 
 import android.app.Application;
+import android.util.Base64;
 
-import com.dbflow5.config.DatabaseConfig;
-import com.dbflow5.config.FlowConfig;
-import com.dbflow5.config.FlowLog;
-import com.dbflow5.config.FlowManager;
-import com.dbflow5.database.AndroidSQLiteOpenHelper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.raizlabs.android.dbflow.config.DatabaseConfig;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+
+import java.io.UnsupportedEncodingException;
+
+import okhttp3.Credentials;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by VNPrk on 16.09.2018.
@@ -14,32 +23,37 @@ import com.dbflow5.database.AndroidSQLiteOpenHelper;
 
 public class App extends Application {
 
+    public static final String USERNAME_API="6987a48d-342e-4a69-8adc-e65b1cc0b9da";
+    public static final String PASSWORD_API="MxYSIi6nQP2Y";
+    public static final String MAINURL_API="https://gateway.watsonplatform.net/language-translator/api/";
     /*public static final UserClass iam = new UserClass();
-    private static LocationApi locationApi;
     private Retrofit retrofit;*/
-
+	private static IdentApi identApi;
+	private Retrofit retrofit;
     @Override
     public void onCreate() {
         super.onCreate();
+        //String baseUrlApi="https://"+USERNAME_API+PASSWORD_API+MAINURL_API;
        /* FlowManager.init(new FlowConfig.Builder(this).build());
         // Setting Log Display
         FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
 */
-        FlowManager.init(new FlowConfig.Builder(getApplicationContext())
-                .database(DatabaseConfig.builder(AppDataBase.class, AndroidSQLiteOpenHelper.createHelperCreator(getApplicationContext()))
-                        .databaseName("MyDatabase")
-                .build())
-                        .build());
+        FlowManager.init(FlowConfig.builder(this)
+                .addDatabaseConfig(DatabaseConfig.builder(AppDataBase.class)
+                        .databaseName("AppDatabase")
+                        .build())
+                .build());
 
+        Gson gson = new GsonBuilder() .setLenient() .create();
+        /*OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .authenticator()*/
 
-
-        /*Gson gson = new GsonBuilder() .setLenient() .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://sert-pknk-ru.1gb.ru/") //Базовая часть адреса
+                .baseUrl(MAINURL_API) //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create(gson)) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
-        locationApi = retrofit.create(LocationApi.class); //Создаем объект, при помощи которого будем выполнять запросы
-        */
+        identApi = retrofit.create(IdentApi.class); //Создаем объект, при помощи которого будем выполнять запросы
+
         //CheckMyId();
     }
 
@@ -73,7 +87,17 @@ public class App extends Application {
         }
     }*/
 
-    /*public static LocationApi getApi() {
-        return locationApi;
-    }*/
+    public static IdentApi getApi() {
+        return identApi;
+    }
+
+    public static String getAuthToken() {
+        byte[] data = new byte[0];
+        try {
+            data = (USERNAME_API + ":" + PASSWORD_API).getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "Basic " + Base64.encodeToString(data, Base64.NO_WRAP);
+    }
 }

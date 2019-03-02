@@ -1,7 +1,6 @@
 package com.example.softomateidentifyerl;
 
-import com.dbflow5.annotation.Database;
-import com.dbflow5.config.DBFlowDatabase;
+import com.raizlabs.android.dbflow.annotation.Database;
 
 /**
  * Created by VNPrk on 16.09.2018.
@@ -9,8 +8,8 @@ import com.dbflow5.config.DBFlowDatabase;
 
 
 
-@Database(/*name = AppDataBase.NAME,*/ version = AppDataBase.VERSION)
-public abstract class AppDataBase extends DBFlowDatabase {
-    //public static final String NAME = "AppDatabase";
+@Database(name = AppDataBase.NAME, version = AppDataBase.VERSION)
+public class AppDataBase {
+    public static final String NAME = "AppDatabase";
     public static final int VERSION = 1;
 }

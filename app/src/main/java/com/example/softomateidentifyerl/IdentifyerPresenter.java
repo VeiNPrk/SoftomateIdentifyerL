@@ -11,6 +11,7 @@ public class IdentifyerPresenter implements IdentifyerContractor.Presenter {
     @Override
     public void onFabWasClicked() {
         String text = view.getIdentText();
+        //String lang = db.identifyerLang(text);
 		view.initIdentifyer(text);
     }
 	
@@ -22,5 +23,10 @@ public class IdentifyerPresenter implements IdentifyerContractor.Presenter {
     @Override
     public void onDestroy() {
 
+    }
+
+    @Override
+    public void dialogShowDone() {
+        view.clearTvIdentText();
     }
 }

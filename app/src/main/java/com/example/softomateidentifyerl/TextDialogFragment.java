@@ -16,25 +16,23 @@ import android.widget.EditText;
  */
 
 public class TextDialogFragment extends DialogFragment {
+    public static final String TAG = "TextDialogFragment";
     final String LOG_TAG = "myLogs";
     static String mMessageToDisplay="";
-    //DescribeDialogListener mListener;
+    static TextDialogListener mListener;
     EditText etDescribe = null;
     int type = 0;
 
-    /*@Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         try {
-            mListener = (DescribeDialogListener) getTargetFragment();
+            mListener = (TextDialogListener) getTargetFragment();
         } catch (ClassCastException e) {
             throw new ClassCastException("Calling Fragment must implement OnAddFriendListener");
         }
-    }*/
-	
-	public static final String TAG = "NotificationDialogFragment";
-
+    }
 
     public static TextDialogFragment newInstance(String message) {
 
@@ -42,22 +40,6 @@ public class TextDialogFragment extends DialogFragment {
         mMessageToDisplay = message;
         return textDialog;
     }
-
-/*
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        Activity a;
-        a=(Activity) context;
-        try {
-            // Instantiate the MyDialogListener so we can send events to the host
-            mListener = (DescribeDialogListener) a;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(a.toString() + " must implement MyDialogListener");
-        }
-    }*/
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -67,36 +49,20 @@ public class TextDialogFragment extends DialogFragment {
 			.setTitle(getString(R.string.dlg_tittle))
             .setPositiveButton(R.string.dlg_ok,new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    mListener.onYesClicked();
                         //succesRequest(requestUsers.get(position).getId());
                         //Toast.makeText(getContext(),"id="+id+" position="+position, Toast.LENGTH_LONG).show();
                 }
             })
             .setMessage(mMessageToDisplay);
-        /*adb.create().show();
-		
-		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
-                .setTitle(getString(R.string.dialog_send_tittle))
-                .setView(view)
-                .setPositiveButton(getString(R.string.dialog_send_yes), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String idDescribe = etDescribe.getText().toString();
-                        mListener.onYesClicked(DescribeDialogFragment.this, idDescribe);
-                    }
-                })
-                .setNegativeButton(getString(R.string.dialog_send_no), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.onNoClicked(DescribeDialogFragment.this);
-                    }
-                })
-                .setMessage(getString(R.string.dialog_text_edit));*/
+
         return adb.create();
     }
-/*
-    public interface DescribeDialogListener {
-        public void onYesClicked(DialogFragment dialog, String data);
-        public void onNoClicked(DialogFragment dialog);
+
+    public interface TextDialogListener {
+        public void onYesClicked();
     }
-*/
+
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         Log.d(LOG_TAG, "TextDialog : onDismiss");

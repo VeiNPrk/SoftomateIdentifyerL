@@ -1,57 +1,87 @@
 package com.example.softomateidentifyerl;
 
 import android.util.Log;
+import android.widget.Toast;
 
-import com.dbflow5.query.SQLite;
-import com.dbflow5.query.Select;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DBClass implements MVPRepository {
 
     public DBClass(){}
 
     @Override
-    public void saveText(TextClass textItem) {
-	//	textItem.save();
+    public void saveText(final TextClass textItem) {
+        //textItem.save();
     }
 
     @Override
     public List<TextClass> getHistory() {
-
-        List<TextClass> texts = new ArrayList<TextClass>();
-        TextClass t1 = new TextClass("123fgbdb gvbe greg");
-        t1.setLang("RU");
-        texts.add(t1);
-        TextClass t2 = new TextClass("123fgbdb gvbe greg");
-        t2.setLang("RUEND");
-        texts.add(t2);
-        TextClass t3 = new TextClass("123fgbdb gvbe greg");
-        t3.setLang("RUS");
-        texts.add(t3);
-        TextClass t4 = new TextClass("123fgbdb gvbe greg");
-        t4.setLang("ENG");
-        texts.add(t4);
-		/*List<TextClass> texts = null;
+        List<TextClass> texts = null;
+		//texts
         try{
-            texts = SQLite.select().from(TextClass.class).orderBy(TextClass_Table.dateTimeMils, true).queryList();
+            texts = (List<TextClass>) SQLite.select().from(TextClass.class).orderBy(TextClass_Table.dateTimeMils.getNameAlias(), false).queryList();
+
         }
         catch (Exception ex)
         {
             Log.e("CATCH getHistory", ex.getMessage());
-        }*/
+        }
         return texts;
     }
 
     @Override
     public String identifyerLang(String text) {
-		
-        return "Чтото";
+        String returnStr = "";
+        //text = "Hello world";
+        /*try {
+            Call<Languages> call = App.getApi().identText(App.getAuthToken(),text);
+
+            messages.enqueue(new Callback<Languages>() {
+                @Override
+                public void onResponse(Call<Languages> call, Response<Languages> response) {
+                    Log.d("","response " + response.body().toString());
+                }
+
+                @Override
+                public void onFailure(Call<Languages> call, Throwable t) {
+                    Log.d("identifyerLang", t.getMessage());
+                }
+            });
+            messages.
+            //Log.d("identifyerLang", App.getApi().identText(text).execute().body().toString());
+        }
+        catch (Exception ex){
+            Log.e("identifyerLang", ex.getMessage());
+        }*/
+        Languages langs = null;
+        try {
+            Call<Languages> call = App.getApi().identText(App.getAuthToken(),text);
+            Response<Languages> response = call.execute();
+
+            if (response.isSuccessful()) {
+                langs=response.body();
+                if(langs!=null)
+                    returnStr=langs.getLanguages().get(0).getLanguage();
+                else
+                    returnStr="NULL Langs";
+            }
+            else {
+                returnStr=response.message()+" "+response.errorBody().toString();
+                Log.e("identifyerLang", response.message()+" "+response.errorBody().toString());
+            }
+        } catch (IOException ex) {
+            returnStr=ex.getMessage();
+            Log.e("identifyerLang", ex.getMessage());
+        }
+        return returnStr;
     }
 
-    private void testFill()
-    {
-
-    }
 }
