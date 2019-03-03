@@ -2,11 +2,14 @@
     <string name="app_name">SoftomateIdentifyerL</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">SoftomateIdentifyer</string>
+    <string name="nav_header_subtitle">ulyanichevis@mail.ru</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="dlg_tittle"></string>
+    <string name="et_ident_hint">Введите текст для распознавания</string>
+    <string name="action_delete_all">Улалить всё</string>
+    <string name="dlg_tittle">Диалоговое окно</string>
     <string name="dlg_ok">ОК</string>
     <string name="dlg_message">Язык текста </string>
+    <string name="dlg_error_message">Ошибка!</string>
+    <string name="dlg_null_message">Строка не должна быть пустой!</string>
 </resources>

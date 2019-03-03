@@ -30,6 +30,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    implementation 'org.greenrobot:eventbus:3.1.1'
     /*
     annotationProcessor "com.github.agrosner.dbflow:processor:${dbflow_version}"
     implementation "com.github.agrosner.dbflow:core:${dbflow_version}"

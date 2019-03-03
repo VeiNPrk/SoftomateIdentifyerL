@@ -1,17 +1,7 @@
 package com.example.softomateidentifyerl;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.support.v4.app.DialogFragment;
-import android.database.Cursor;
 import android.support.v4.app.Fragment;
-
-import android.database.ContentObserver;
-//import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,7 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,21 +27,17 @@ import java.util.List;
 
 public class HistoryFragment extends Fragment implements HistoryContractor.View {
 
-    /*List<String> elements;
-    List<Integer> selectedPositions;*/
     List<TextClass> texts;
-    final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     HistoryRecyclerAdapter adapter;
-    MenuItem deleteItem;
     RecyclerView rvHistory;
-    ActionMode actionMode;
     HistoryPresenter presenter;
-    ProgressBar progressBar;
     View view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -61,8 +49,6 @@ public class HistoryFragment extends Fragment implements HistoryContractor.View 
         setRecyclerView();
         texts = new ArrayList<TextClass>();
         presenter.viewWasInit();
-        /*testFill();
-        refreshData(texts);*/
         return view;
 
     }
@@ -90,9 +76,47 @@ public class HistoryFragment extends Fragment implements HistoryContractor.View 
         adapter.setData(texts);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        presenter.sendEventMessage(event.message);
+    };
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.history_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.menu_delete_all: {
+                presenter.deleteAllHistory();
+                return true;
+            }
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
     }
+
+
 }

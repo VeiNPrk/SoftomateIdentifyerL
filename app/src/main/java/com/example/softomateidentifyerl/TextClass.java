@@ -8,10 +8,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
 
-/**
- * Created by VNPrk on 16.09.2018.
- */
-
 @Table(database = AppDataBase.class)
 public class TextClass extends BaseModel {
     @PrimaryKey

@@ -1,12 +1,12 @@
 package com.example.softomateidentifyerl;
 
 import android.os.Bundle;
-import android.view.View;
 
 
 public interface IdentifyerContractor {
     interface View {
         void isShowDialog(String lang);
+        void isShowErrorDialog(String error);
 		String getIdentText();
 		void clearTvIdentText();
 		void initIdentifyer(String text);
@@ -14,7 +14,7 @@ public interface IdentifyerContractor {
 
     interface Presenter {
         void onFabWasClicked();
-		void onLoadFinished(TextClass txt);
+		void onLoadFinished(Bundle bundle);
         void onDestroy();
         void dialogShowDone();
     }

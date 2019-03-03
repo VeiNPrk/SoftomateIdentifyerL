@@ -1,8 +1,5 @@
 package com.example.softomateidentifyerl;
 
-import android.os.Bundle;
-import android.view.View;
-
 import java.util.List;
 
 
@@ -13,6 +10,8 @@ public interface HistoryContractor {
 
     interface Presenter {
         void viewWasInit();
+        void sendEventMessage(String message);
+        void deleteAllHistory();
         void onDestroy();
     }
 

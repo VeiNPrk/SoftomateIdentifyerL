@@ -1,7 +1,5 @@
 package com.example.softomateidentifyerl;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -14,25 +12,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by VNPrk on 27.10.2018.
  */
 
-public class IdentifyerFragment extends Fragment implements LoaderManager.LoaderCallbacks<TextClass>, IdentifyerContractor.View,
+public class IdentifyerFragment extends Fragment implements LoaderManager.LoaderCallbacks<Bundle>, IdentifyerContractor.View,
     TextDialogFragment.TextDialogListener{
 
     public final String TAG = getClass().getSimpleName();
     private static final int MSG_SHOW_DIALOG = 111;
+    private static final int MSG_SHOW_ERROR_DIALOG = 112;
     private static final String SAVE_STATE_TEXT = "state_text";
     private static final String SAVE_STATE_LOADST = "state_loader";
     TextView tvText = null;
 	FloatingActionButton fabIdent;
     View view=null;
     String lang="";
+    String error="";
     boolean loaderIsStart = false;
     IdentifyerPresenter presenter=null;
 
@@ -59,8 +57,6 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
                 bundle.putString(IdentifyerLoader.KEY_IDENT_TEXT, text);
                 getLoaderManager().restartLoader(IdentifyerLoader.IDENT_LOADER_ID, bundle, this);
             }
-
-            //initIdentifyer(text);
         }
         getLoaderManager();
         Log.d(TAG, "onCreateView");
@@ -93,14 +89,6 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
         super.onDestroy();
         presenter.onDestroy();
     }
-/*private ContentObserver observer = new ContentObserver(new Handler()){
-        @Override
-        public void onChange(boolean selfChange){
-            super.onChange(selfChange);
-            refreshData();
-        }
-    };*/
-
 
     @Override
     public void isShowDialog(String lang) {
@@ -108,8 +96,21 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
         handler.sendEmptyMessage(MSG_SHOW_DIALOG);
     }
 
+    @Override
+    public void isShowErrorDialog(String error) {
+        this.error=error;
+        handler.sendEmptyMessage(MSG_SHOW_ERROR_DIALOG);
+    }
+
     public void showDialog(String lang) {
         String messageDialog = String.format("%s %s",getString(R.string.dlg_message), lang );
+        TextDialogFragment dialog = TextDialogFragment.newInstance(messageDialog);
+        dialog.setTargetFragment(this,0);
+        dialog.show(getFragmentManager(), TextDialogFragment.TAG);
+    }
+
+    public void setMsgShowErrorDialog(String error) {
+        String messageDialog = String.format("%s %s",getString(R.string.dlg_error_message), error );
         TextDialogFragment dialog = TextDialogFragment.newInstance(messageDialog);
         dialog.setTargetFragment(this,0);
         dialog.show(getFragmentManager(), TextDialogFragment.TAG);
@@ -132,7 +133,7 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
 	}
 	
 	@Override
-    public Loader<TextClass> onCreateLoader(int id, Bundle args) {
+    public Loader<Bundle> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "onCreateLoader");
         loaderIsStart=true;
 		return new IdentifyerLoader(view.getContext(), args);
@@ -140,7 +141,7 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<TextClass> loader, TextClass data) {
+    public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
         int id = loader.getId();
         presenter.onLoadFinished(data);
         getLoaderManager().destroyLoader(id);
@@ -149,7 +150,7 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onLoaderReset(Loader<TextClass> loader) {
+    public void onLoaderReset(Loader<Bundle> loader) {
         Log.d(TAG, "onLoaderReset");
     }
 
@@ -158,6 +159,9 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
         public void handleMessage(Message msg) {
             if(msg.what == MSG_SHOW_DIALOG) {
                 showDialog(lang);
+            }
+            else if(msg.what == MSG_SHOW_ERROR_DIALOG) {
+                setMsgShowErrorDialog(error);
             }
         }
     };

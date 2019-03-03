@@ -20,7 +20,19 @@ public class HistoryPresenter implements HistoryContractor.Presenter {
     }
 
     @Override
+    public void sendEventMessage(String message) {
+        if(message==MessageEvent.EVENT_UPDATE_HISTORY)
+            viewWasInit();
+    }
+
+    @Override
+    public void deleteAllHistory() {
+        db.clearHistory();
+    }
+
+    @Override
     public void onDestroy() {
+        view=null;
         db = null;
     }
 }
