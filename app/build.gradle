@@ -17,9 +17,9 @@ android {
         }
     }
 }
-/*def dbflow_version = "5.0.0-alpha1"*/
+
 def dbflow_version = "4.2.4"
-/*def dbflow_version = "4.2.4"*/
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.0.0'
@@ -32,14 +32,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 
     implementation 'org.greenrobot:eventbus:3.1.1'
-    /*
-    annotationProcessor "com.github.agrosner.dbflow:processor:${dbflow_version}"
-    implementation "com.github.agrosner.dbflow:core:${dbflow_version}"
-    implementation "com.github.agrosner.dbflow:lib:${dbflow_version}"
-    implementation "com.github.agrosner.dbflow:sqlcipher:${dbflow_version}"*/
 
-        annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
-        implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
-        implementation "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
-        implementation "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${dbflow_version}"
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
+    implementation "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${dbflow_version}"
 }
