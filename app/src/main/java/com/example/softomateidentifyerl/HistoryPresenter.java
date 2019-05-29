@@ -4,9 +4,8 @@ import java.util.List;
 
 public class HistoryPresenter implements HistoryContractor.Presenter {
 
-
-    HistoryContractor.View view=null;
-    DBClass db = null;
+    private HistoryContractor.View view=null;
+    private DBClass db = null;
 
     public HistoryPresenter(HistoryContractor.View _view){
         view=_view;

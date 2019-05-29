@@ -17,7 +17,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     public final String TAG = getClass().getSimpleName();
-    int menuItemSelected=0;
+    private int menuItemSelected=0;
     public static final String SAVE_STATE_MENU="state_menu";
 		
     @Override

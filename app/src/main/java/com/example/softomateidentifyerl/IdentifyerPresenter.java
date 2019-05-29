@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 public class IdentifyerPresenter implements IdentifyerContractor.Presenter {
 
-    IdentifyerContractor.View view =null;
-    DBClass db = null;
+    private IdentifyerContractor.View view =null;
+    private DBClass db = null;
     public IdentifyerPresenter(IdentifyerContractor.View _view){
         view=_view;
         db = new DBClass();

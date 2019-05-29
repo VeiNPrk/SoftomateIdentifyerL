@@ -13,7 +13,7 @@ public class IdentifyerLoader extends AsyncTaskLoader<Bundle> {
     public static final String KEY_IDENT_TEXT = "ident_text_key";
     public static final int IDENT_LOADER_ID = 100;
 	private String identText;
-	DBClass db;
+    private DBClass db;
 
     public IdentifyerLoader(Context context, Bundle args) {
         super(context);

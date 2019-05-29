@@ -27,11 +27,11 @@ import java.util.List;
 
 public class HistoryFragment extends Fragment implements HistoryContractor.View {
 
-    List<TextClass> texts;
-    HistoryRecyclerAdapter adapter;
-    RecyclerView rvHistory;
-    HistoryPresenter presenter;
-    View view;
+    private List<TextClass> texts;
+    private HistoryRecyclerAdapter adapter;
+    private RecyclerView rvHistory;
+    private HistoryPresenter presenter;
+    private View view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

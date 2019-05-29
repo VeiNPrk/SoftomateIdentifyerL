@@ -9,9 +9,9 @@ import android.util.Log;
 
 public class TextDialogFragment extends DialogFragment {
     public static final String TAG = "TextDialogFragment";
-    final String LOG_TAG = "myLogs";
-    static String mMessageToDisplay="";
-    static TextDialogListener mListener;
+    private final String LOG_TAG = "myLogs";
+    private static String mMessageToDisplay="";
+    private static TextDialogListener mListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,6 @@ public class TextDialogFragment extends DialogFragment {
     }
 
     public static TextDialogFragment newInstance(String message) {
-
         TextDialogFragment textDialog = new TextDialogFragment();
         mMessageToDisplay = message;
         return textDialog;
@@ -41,7 +40,6 @@ public class TextDialogFragment extends DialogFragment {
                 }
             })
             .setMessage(mMessageToDisplay);
-
         return adb.create();
     }
 

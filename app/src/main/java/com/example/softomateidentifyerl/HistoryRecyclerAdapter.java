@@ -14,7 +14,7 @@ import java.util.List;
 
 public class HistoryRecyclerAdapter extends RecyclerView.Adapter<HistoryRecyclerAdapter.HistoryViewHolder>{
 
-    Context context;
+    private Context context;
     class HistoryViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvHistoryText;

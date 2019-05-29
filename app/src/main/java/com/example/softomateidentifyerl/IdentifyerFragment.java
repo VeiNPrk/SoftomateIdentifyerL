@@ -26,13 +26,13 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
     private static final int MSG_SHOW_ERROR_DIALOG = 112;
     private static final String SAVE_STATE_TEXT = "state_text";
     private static final String SAVE_STATE_LOADST = "state_loader";
-    TextView tvText = null;
-	FloatingActionButton fabIdent;
-    View view=null;
-    String lang="";
-    String error="";
-    boolean loaderIsStart = false;
-    IdentifyerPresenter presenter=null;
+    private TextView tvText = null;
+    private FloatingActionButton fabIdent;
+    private View view=null;
+    private String lang="";
+    private String error="";
+    private boolean loaderIsStart = false;
+    private IdentifyerPresenter presenter=null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,6 @@ public class IdentifyerFragment extends Fragment implements LoaderManager.Loader
         }
         getLoaderManager();
         Log.d(TAG, "onCreateView");
-
         return view;
     }
 
